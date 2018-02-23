@@ -1,5 +1,7 @@
 package com.railroad.config;
 
+import com.railroad.model.entity.Direction;
+import com.railroad.model.entity.Station;
 import com.railroad.model.entity.Test;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class JpaConfig {
         sessionBuilder.scanPackages("com.railroad.model.entity");
         sessionBuilder.addProperties(additionalProperties());
         sessionBuilder.addAnnotatedClasses(Test.class);
+        sessionBuilder.addAnnotatedClasses(Station.class);
+        sessionBuilder.addAnnotatedClasses(Direction.class);
         return sessionBuilder.buildSessionFactory();
     }
 

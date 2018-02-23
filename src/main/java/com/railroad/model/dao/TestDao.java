@@ -11,8 +11,13 @@ import java.util.List;
 @Repository
 public class TestDao {
 
-    @Autowired
+    private final
     SessionFactory sessionFactory;
+
+    @Autowired
+    public TestDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public List getAllTests(){
         Session session = sessionFactory.openSession();
