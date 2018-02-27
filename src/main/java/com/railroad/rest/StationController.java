@@ -19,7 +19,7 @@ public class StationController {
     }
 
     /**
-     * Process a request and returns ModelAndView for stations.jsp
+     * Process a request and returns ModelAndView for stations.jsp.
      *
      * @return model and view.
      */
@@ -34,8 +34,8 @@ public class StationController {
     }
 
     /**
-     * Process a request and returns ModelAndView for station.jsp
-     *
+     * Process a request and returns ModelAndView for station.jsp.
+     * @param id station id.
      * @return model and view.
      */
     @RequestMapping(value = "/station/{id}", method = RequestMethod.GET)
@@ -55,6 +55,7 @@ public class StationController {
      * new station or update
      * and returns ModelAndView for station.jsp
      *
+     * @param stationDto station DTO.
      * @return model and view.
      */
     @RequestMapping(value = "/station/add", method = RequestMethod.POST)

@@ -8,6 +8,7 @@
 
     <script src="<c:url value="/resources/lib/jquery-3.3.1.min.js" /> "></script>
     <link href="<c:url value="/resources/lib/bootstrap/dist/css/bootstrap.css" />" rel="stylesheet">
+    <script src="<c:url value="/resources/lib/bootstrap/dist/js/bootstrap.min.js" /> "></script>
 </head>
 <body>
 
@@ -26,10 +27,16 @@
     <%@include file="station.jsp" %>
 </c:if>
 
+<c:if test="${userClickTrains == true}">
+    <%@include file="trains.jsp" %>
+</c:if>
+
+<c:if test="${userClickTrain == true}">
+    <%@include file="train.jsp" %>
+</c:if>
+
 </body>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9D3FKnauqxAM4dYF9BEoiWpifX0ibQso&callback=initMap"
-        type="text/javascript"></script>
+
 
 </html>
 

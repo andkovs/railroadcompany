@@ -41,7 +41,7 @@
 </main>
 
 <script>
-    $(function () {
+//    $(function () {
     function initMap() {
         var station = {lat: ${stations[1].lat}, lng: ${stations[1].lng}};
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -85,6 +85,9 @@
             });
         }
     }
-    initMap();
-    });
+//    initMap();
+//    });
 </script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9D3FKnauqxAM4dYF9BEoiWpifX0ibQso&callback=initMap"
+        type="text/javascript"></script>

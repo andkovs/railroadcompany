@@ -27,7 +27,8 @@
                     <c:forEach var="st" items="${stations}">
                         <div class="checkbox">
                             <label>
-                                <form:checkbox path="arriveStationIds" value="${st.stationId}" data-lat="${st.lat}" data-lng="${st.lng}"></form:checkbox>
+                                <form:checkbox path="arriveStationIds" value="${st.stationId}" data-lat="${st.lat}"
+                                               data-lng="${st.lng}"></form:checkbox>
                                     ${st.stationTitle}
                             </label>
                         </div>
@@ -42,94 +43,102 @@
 
 <script>
 //    $(function () {
-//
-//    });
-function initMap() {
-    var station = {lat: ${station.lat}, lng: ${station.lng}};
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 10,
-        center: station
-    });
-    //marker
-    var markerGreen = new google.maps.Marker({
-        position: station,
-        map: map,
-        draggable: true,
-        icon: 'https://maps.google.com/mapfiles/kml/paddle/grn-circle.png'
-    });
-    var stations = [
-        <c:forEach var="st" items="${stations}">
-        {
-            id: ${st.stationId},
-            title: '${st.stationTitle}',
-            location: {lat: ${st.lat}, lng: ${st.lng}}
-        },
-        </c:forEach>
-    ];
-    for (var i = 0; i < stations.length; i++) {
-        var s = stations[i];
-        var marker = new google.maps.Marker({
-            position: s.location,
-            map: map,
-            icon: 'http://maps.google.com/mapfiles/kml/paddle/red-circle.png'
-        });
-    }
-    var directions = [
-        <c:forEach var="nSt" items="${neighbouringStations}" varStatus="loop">
-        [
-            {lat: ${nSt.departureStation.lat}, lng: ${nSt.departureStation.lng}},
-            {lat: ${nSt.arriveStation.lat}, lng: ${nSt.arriveStation.lng}}
-        ]${!loop.last ? ',' : ''}
-        </c:forEach >
-    ];
-    for (var i = 0; i <= directions.length; i++) {
-        var direction = new google.maps.Polyline({
-            path: directions[i],
-            geodesic: true,
-            strokeColor: '#FF0000',
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-            map: map
-        });
-    }
-    google.maps.event.addListener(markerGreen, 'dragend', function (event) {
-        var lat = event.latLng.lat();
-        var lng = event.latLng.lng();
-        $('#latInput').val(lat);
-        $('#lngInput').val(lng);
-        markerGreen.setPosition({lat: lat, lng: lng});
-        clearLines();
-        drawLines();
-    });
-    var neighbourStations = [];
-    function drawLines() {
-        $('[name="arriveStationIds"]').filter(':checked').each(function () {
-            var array = [{lat: markerGreen.getPosition().lat(), lng: markerGreen.getPosition().lng()},{lat: $(this).data('lat'), lng: $(this).data('lng')}];
-            var line = new google.maps.Polyline({
-                path: array,
-                geodesic: true,
-                strokeColor: '#00FF00',
-                strokeOpacity: 1.0,
-                strokeWeight: 2,
-                map: map
+        function initMap() {
+            var station = {lat: ${station.lat}, lng: ${station.lng}};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: station
             });
-            neighbourStations.push(line)
-        })
-    }
+            //marker
+            var markerGreen = new google.maps.Marker({
+                position: station,
+                map: map,
+                draggable: true,
+                icon: 'https://maps.google.com/mapfiles/kml/paddle/grn-circle.png'
+            });
+            var stations = [
+                <c:forEach var="st" items="${stations}">
+                {
+                    id: ${st.stationId},
+                    title: '${st.stationTitle}',
+                    location: {lat: ${st.lat}, lng: ${st.lng}}
+                },
+                </c:forEach>
+            ];
+            for (var i = 0; i < stations.length; i++) {
+                var s = stations[i];
+                var marker = new google.maps.Marker({
+                    position: s.location,
+                    map: map,
+                    icon: 'http://maps.google.com/mapfiles/kml/paddle/red-circle.png'
+                });
+            }
+            var directions = [
+                <c:forEach var="nSt" items="${neighbouringStations}" varStatus="loop">
+                [
+                    {lat: ${nSt.departureStation.lat}, lng: ${nSt.departureStation.lng}},
+                    {lat: ${nSt.arriveStation.lat}, lng: ${nSt.arriveStation.lng}}
+                ]${!loop.last ? ',' : ''}
+                </c:forEach >
+            ];
+            for (var i = 0; i <= directions.length; i++) {
+                var direction = new google.maps.Polyline({
+                    path: directions[i],
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                    map: map
+                });
+            }
+            google.maps.event.addListener(markerGreen, 'dragend', function (event) {
+                var lat = event.latLng.lat();
+                var lng = event.latLng.lng();
+                $('#latInput').val(lat);
+                $('#lngInput').val(lng);
+                markerGreen.setPosition({lat: lat, lng: lng});
+                clearLines();
+                drawLines();
+            });
+            var neighbourStations = [];
 
-    function clearLines() {
-        for(var i=0; i<neighbourStations.length; i++){
-            console.log('neighbourStations', neighbourStations);
-            neighbourStations[i].setMap(null);
+            function drawLines() {
+                $('[name="arriveStationIds"]').filter(':checked').each(function () {
+                    var array = [{
+                        lat: markerGreen.getPosition().lat(),
+                        lng: markerGreen.getPosition().lng()
+                    }, {lat: $(this).data('lat'), lng: $(this).data('lng')}];
+                    var line = new google.maps.Polyline({
+                        path: array,
+                        geodesic: true,
+                        strokeColor: '#00FF00',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2,
+                        map: map
+                    });
+                    neighbourStations.push(line)
+                })
+            }
+
+            function clearLines() {
+                for (var i = 0; i < neighbourStations.length; i++) {
+                    console.log('neighbourStations', neighbourStations);
+                    neighbourStations[i].setMap(null);
+                }
+                neighbourStations = [];
+            }
+
+            $(function () {
+                drawLines();
+                $('[name="arriveStationIds"]').on('change', function () {
+                    clearLines();
+                    drawLines();
+                })
+            })
         }
-        neighbourStations = [];
-    }
-    $(function () {
-        drawLines();
-        $('[name="arriveStationIds"]').on('change', function () {
-            clearLines();
-            drawLines();
-        })
-    })
-}
+//    initMap();
+//    });
 </script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9D3FKnauqxAM4dYF9BEoiWpifX0ibQso&callback=initMap"
+        type="text/javascript"></script>

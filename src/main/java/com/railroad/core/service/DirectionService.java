@@ -2,6 +2,7 @@ package com.railroad.core.service;
 
 import com.railroad.core.mapper.DirectionMapper;
 import com.railroad.model.dao.DirectionDao;
+import com.railroad.model.dto.DirectionDto;
 import com.railroad.model.dto.StationDto;
 import com.railroad.model.entity.Direction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +98,18 @@ public class DirectionService {
      *
      * @return list of all directions.
      */
-    List<Direction> getAllDirections() {
-        return directionDao.getAllDirections();
+    public List<DirectionDto> getAllDirections() {
+        return directionMapper.directionListToDirectionDtoList(directionDao.getAllDirections());
+    }
+
+    /**
+     * Gets direction id by departure station id
+     * and arrive station id.
+     * @param depStationId departure station id.
+     * @param arrStationId arrive station id.
+     * @return direction id.
+     */
+    Long getDirectionIdByDepStationIdAndArriveStationId(Long depStationId, Long arrStationId) {
+        return directionDao.getDirectionIdByDepStationIdAndArriveStationIdFromDb(depStationId, arrStationId);
     }
 }

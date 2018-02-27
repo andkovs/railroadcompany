@@ -43,6 +43,7 @@ public class StationDao {
      * Saves station in DB.
      *
      * @param station new direction.
+     * @return new station id.
      */
     public Long saveStation(Station station) {
         Session session = sessionFactory.openSession();
@@ -54,7 +55,7 @@ public class StationDao {
     /**
      * Updates station in DB.
      *
-     * @param station new direction.
+     * @param station new station.
      */
     public void updateStation(Station station) {
         Session session = sessionFactory.openSession();

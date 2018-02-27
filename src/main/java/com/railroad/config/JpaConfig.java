@@ -1,8 +1,6 @@
 package com.railroad.config;
 
-import com.railroad.model.entity.Direction;
-import com.railroad.model.entity.Station;
-import com.railroad.model.entity.Test;
+import com.railroad.model.entity.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
@@ -18,8 +16,12 @@ import java.util.Properties;
 @PropertySource("classpath:application.properties")
 public class JpaConfig {
 
+    private final Environment env;
+
     @Autowired
-    private Environment env;
+    public JpaConfig(Environment env) {
+        this.env = env;
+    }
 
     @Bean
     public SessionFactory getSessionFactory(DataSource dataSource) {
@@ -30,6 +32,10 @@ public class JpaConfig {
         sessionBuilder.addAnnotatedClasses(Test.class);
         sessionBuilder.addAnnotatedClasses(Station.class);
         sessionBuilder.addAnnotatedClasses(Direction.class);
+        sessionBuilder.addAnnotatedClasses(Train.class);
+        sessionBuilder.addAnnotatedClasses(Wagon.class);
+        sessionBuilder.addAnnotatedClasses(WagonType.class);
+        sessionBuilder.addAnnotatedClasses(Schedule.class);
         return sessionBuilder.buildSessionFactory();
     }
 

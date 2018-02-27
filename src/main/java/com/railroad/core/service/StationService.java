@@ -2,6 +2,7 @@ package com.railroad.core.service;
 
 import com.railroad.core.mapper.StationMapper;
 import com.railroad.model.dao.StationDao;
+import com.railroad.model.dto.DirectionDto;
 import com.railroad.model.dto.NeighbouringStationDto;
 import com.railroad.model.dto.StationDto;
 import com.railroad.model.entity.Direction;
@@ -33,7 +34,7 @@ public class StationService {
     /**
      * Gets list of all stations.
      *
-     * @return list of all direction DTO's.
+     * @return list of all station DTO's.
      */
     public List getAllStations() {
         return stationMapper.stationListToStationDtoList(stationDao.getAllStations());
@@ -118,7 +119,7 @@ public class StationService {
      * @return list of neighbouring station DTO's.
      */
     public List<NeighbouringStationDto> getAllNeighbouringStation() {
-        List<Direction> directions = directionService.getAllDirections();
+        List<DirectionDto> directions = directionService.getAllDirections();
         return directions.stream().map(d -> new NeighbouringStationDto(
                 stationDao.getStationById(d.getDepStationId()),
                 stationDao.getStationById(d.getArrStationId())

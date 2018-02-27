@@ -80,4 +80,18 @@ public class DirectionDao {
         query.executeUpdate();
     }
 
+    /**
+     * Gets direction id by departure station id
+     * and arrive station id from db.
+     * @param depStationId departure station id.
+     * @param arrStationId arrive station id.
+     * @return direction id.
+     */
+    public Long getDirectionIdByDepStationIdAndArriveStationIdFromDb(Long depStationId, Long arrStationId) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("select directionId from Direction where depStationId= :dId AND arrStationId= :aId");
+        query.setParameter("dId", depStationId);
+        query.setParameter("aId", arrStationId);
+        return (Long)query.uniqueResult();
+    }
 }

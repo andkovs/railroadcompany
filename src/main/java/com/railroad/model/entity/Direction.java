@@ -1,6 +1,7 @@
 package com.railroad.model.entity;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 public class Direction {
@@ -9,6 +10,10 @@ public class Direction {
     private Long arrStationId;
     private Station stationByDepStationId;
     private Station stationByArrStationId;
+    private Collection<Schedule> schedulesByDirectionId;
+
+    public Direction() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,4 +90,15 @@ public class Direction {
     public void setStationByArrStationId(Station stationByArrStationId) {
         this.stationByArrStationId = stationByArrStationId;
     }
+
+    @OneToMany(mappedBy = "directionByDirectionId")
+    public Collection<Schedule> getSchedulesByDirectionId() {
+        return schedulesByDirectionId;
+    }
+
+    public void setSchedulesByDirectionId(Collection<Schedule> schedulesByDirectionId) {
+        this.schedulesByDirectionId = schedulesByDirectionId;
+    }
+
+
 }
