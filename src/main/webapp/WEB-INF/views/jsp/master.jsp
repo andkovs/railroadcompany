@@ -9,6 +9,9 @@
     <script src="<c:url value="/resources/lib/jquery-3.3.1.min.js" /> "></script>
     <link href="<c:url value="/resources/lib/bootstrap/dist/css/bootstrap.css" />" rel="stylesheet">
     <script src="<c:url value="/resources/lib/bootstrap/dist/js/bootstrap.min.js" /> "></script>
+    <script src="<c:url value="/resources/lib/moment.js" /> "></script>
+    <script src="<c:url value="/resources/lib/bootstrap-datetimepicker.js" /> "></script>
+
 </head>
 <body>
 
@@ -33,6 +36,14 @@
 
 <c:if test="${userClickTrain == true}">
     <%@include file="train.jsp" %>
+</c:if>
+
+<c:if test="${userClickUser == true}">
+    <%@include file="user.jsp" %>
+</c:if>
+
+<c:if test="${userClickLogin == true}">
+    <%@include file="login.jsp" %>
 </c:if>
 
 </body>

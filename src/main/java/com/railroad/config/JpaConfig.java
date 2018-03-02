@@ -36,6 +36,7 @@ public class JpaConfig {
         sessionBuilder.addAnnotatedClasses(Wagon.class);
         sessionBuilder.addAnnotatedClasses(WagonType.class);
         sessionBuilder.addAnnotatedClasses(Schedule.class);
+        sessionBuilder.addAnnotatedClasses(UserRole.class);
         return sessionBuilder.buildSessionFactory();
     }
 

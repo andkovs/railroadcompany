@@ -42,7 +42,7 @@ public class StationDao {
     /**
      * Saves station in DB.
      *
-     * @param station new direction.
+     * @param station new station.
      * @return new station id.
      */
     public Long saveStation(Station station) {

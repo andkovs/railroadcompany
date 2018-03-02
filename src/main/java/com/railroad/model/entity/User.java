@@ -36,6 +36,18 @@ public class User {
         this.roles = roles;
     }
 
+    public User(String login, String password, String lastName, String firstName, String middleName, Timestamp birthDate, String phone, String email, Boolean enabled) {
+        this.login = login;
+        this.password = password;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.birthDate = birthDate;
+        this.phone = phone;
+        this.email = email;
+        this.enabled = enabled;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", unique = true, nullable = false)

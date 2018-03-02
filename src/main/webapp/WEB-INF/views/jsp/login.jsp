@@ -1,16 +1,16 @@
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Login Page</title>
-    <%@page session="true" %>
-    <script src="<c:url value="/resources/lib/jquery-3.3.1.min.js" /> "></script>
-    <link href="<c:url value="/resources/lib/bootstrap/dist/css/bootstrap.css" />" rel="stylesheet">
-    <script src="<c:url value="/resources/lib/bootstrap/dist/js/bootstrap.min.js" /> "></script>
-</head>
-<body onload='document.loginForm.username.focus();'>
+<%--<%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>--%>
+<%--<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>--%>
+<%--<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>--%>
+<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>--%>
+<%--<html>--%>
+<%--<head>--%>
+    <%--<title>Login Page</title>--%>
+    <%--<%@page session="true" %>--%>
+    <%--<script src="<c:url value="/resources/lib/jquery-3.3.1.min.js" /> "></script>--%>
+    <%--<link href="<c:url value="/resources/lib/bootstrap/dist/css/bootstrap.css" />" rel="stylesheet">--%>
+    <%--<script src="<c:url value="/resources/lib/bootstrap/dist/js/bootstrap.min.js" /> "></script>--%>
+<%--</head>--%>
+<%--<body onload='document.loginForm.username.focus();'>--%>
 <main style="padding: 100px 0;">
     <div class="container">
         <form name='loginForm'
@@ -23,7 +23,7 @@
                             <div class="alert alert-danger col-xs-8 form-group" role="alert">${error}</div>
                         </c:if>
                         <c:if test="${not empty msg}">
-                            <div class="alert alert-danger col-xs-8 form-group" role="alert">${msg}</div>
+                            <div class="alert alert-success col-xs-8 form-group" role="alert">${msg}</div>
                         </c:if>
                     </div>
                     <div class="row">
@@ -49,5 +49,5 @@
         </form>
     </div>
 </main>
-</body>
-</html>
+<%--</body>--%>
+<%--</html>--%>
