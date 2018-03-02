@@ -56,6 +56,4 @@ public class JpaConfig {
         properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         return properties;
     }
-
-
 }
