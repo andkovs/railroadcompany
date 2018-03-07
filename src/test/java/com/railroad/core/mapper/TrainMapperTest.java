@@ -1,39 +1,39 @@
-package com.railroad.core.mapper;
-
-import com.railroad.config.AppConfig;
-import com.railroad.model.dto.TrainDto;
-import com.railroad.model.entity.Train;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class})
-@WebAppConfiguration
-public class TrainMapperTest {
-
-    @Mock
-    private WagonMapper wagonMapper;
-
-    @InjectMocks
-    private TrainMapper trainMapper;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
-
+//package com.railroad.core.mapper;
+//
+//import com.railroad.config.AppConfig;
+//import com.railroad.model.dto.TrainDto;
+//import com.railroad.model.entity.Train;
+//import org.junit.Before;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.MockitoAnnotations;
+//import org.springframework.test.context.ContextConfiguration;
+//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+//import org.springframework.test.context.web.WebAppConfiguration;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//import static org.junit.Assert.*;
+//
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = {AppConfig.class})
+//@WebAppConfiguration
+//public class TrainMapperTest {
+//
+//    @Mock
+//    private WagonMapper wagonMapper;
+//
+//    @InjectMocks
+//    private TrainMapper trainMapper;
+//
+//    @Before
+//    public void setup() {
+//        MockitoAnnotations.initMocks(this);
+//    }
+//
 //    @Test
 //    public void trainListToTrainDtoList() throws Exception {
 //        Train firstTrain = new Train(1L, "A100", true);
@@ -49,5 +49,5 @@ public class TrainMapperTest {
 //
 //        }
 //    }
-
-}
+//
+//}

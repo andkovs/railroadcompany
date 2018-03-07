@@ -2,15 +2,15 @@ package com.railroad.core.service;
 
 import com.railroad.core.mapper.UserMapper;
 import com.railroad.model.dao.UserDao;
-import com.railroad.model.dto.StationDto;
 import com.railroad.model.dto.UserDto;
-import com.railroad.model.entity.Direction;
+import com.railroad.model.entity.User;
 import com.railroad.model.entity.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -35,12 +35,15 @@ public class UserService {
      */
     public UserDto getUserByLogin(String login) {
         //if User not exist, then return empty UserDto
-        if (userDao.getUserByLogin(login) == null) {
-            Date d = new Date();
-            return new UserDto(0L, "", "", "", "", "", new SimpleDateFormat("dd-MM-yyyy HH:mm").format(d), "", "");
+        if (login == null || userDao.getUserByLogin(login) == null) {
+            return getNewUser();
         }
         //get userDto by id
-        return userMapper.userToUserDto(userDao.getUserByLogin(login));
+        UserDto userDto = userMapper.userToUserDto(userDao.getUserByLogin(login));
+        if (userDto == null) {
+            return getNewUser();
+        }
+        return userDto;
     }
 
     /**
@@ -48,15 +51,30 @@ public class UserService {
      * then save, else update.
      *
      * @param userDto saved/updated user DTO.
+     * @return update or add string.
      */
-    public void saveOrUpdateUser(UserDto userDto) {
+    public String saveOrUpdateUser(UserDto userDto) {
+        if (userDto == null) {
+            return null;
+        }
+        User checkUser = userDao.getUserByLogin(userDto.getLogin());
         if (userDto.getUserId() == null || userDao.getUserById(userDto.getUserId()) == null) {
-            //save user and get new id
+            //save user
+            if (checkUser != null||userDto.getLogin() == null || userDto.getLogin().equals("")) {
+                return null;
+            }
             userDao.saveUser(userMapper.userDtoToUser(userDto));
             userDao.saveUserRole(new UserRole(userDto.getLogin(), 2L));
+            return "added";
         } else {
             //update user
             userDao.updateUser(userMapper.userDtoToUser(userDto));
+            return "updated";
         }
+    }
+
+    private UserDto getNewUser() {
+        Date d = new Date();
+        return new UserDto(0L, "", "", "", "", "", new SimpleDateFormat("dd-MM-yyyy HH:mm").format(d), "", "");
     }
 }

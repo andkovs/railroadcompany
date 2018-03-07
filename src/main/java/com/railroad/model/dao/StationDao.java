@@ -74,4 +74,17 @@ public class StationDao {
         query.setParameter("id", id);
         query.executeUpdate();
     }
+
+    /**
+     * Gets station by title from DB.
+     *
+     * @param stationTitle station title.
+     * @return station.
+     */
+    public Station getStationByStationTitle(String stationTitle) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("from Station where stationTitle= :stationTitle");
+        query.setParameter("stationTitle", stationTitle);
+        return (Station) query.uniqueResult();
+    }
 }

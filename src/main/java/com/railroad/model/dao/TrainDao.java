@@ -1,9 +1,10 @@
 package com.railroad.model.dao;
 
-import com.railroad.model.entity.Station;
 import com.railroad.model.entity.Train;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -61,5 +62,31 @@ public class TrainDao {
         Session session = sessionFactory.openSession();
         session.update(train);
         session.flush();
+    }
+
+    /**
+     * Removes train from DB by id.
+     *
+     * @param id removed train's id.
+     */
+    public void removeTrain(Long id) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("delete from Train where trainId= :id");
+        query.setParameter("id", id);
+        query.executeUpdate();
+    }
+
+
+    /**
+     * Gets train by title from DB.
+     *
+     * @param trainNumber train title.
+     * @return train.
+     */
+    public Train getTrainByTrainNumber(String trainNumber) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("from Train where trainNumber= :trainNumber");
+        query.setParameter("trainNumber", trainNumber);
+        return (Train) query.uniqueResult();
     }
 }

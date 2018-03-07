@@ -1,16 +1,18 @@
 package com.railroad.core.service;
 
 import com.railroad.core.mapper.TrainMapper;
+import com.railroad.model.dao.ScheduleDao;
 import com.railroad.model.dao.TrainDao;
 import com.railroad.model.dto.*;
+import com.railroad.model.entity.Direction;
 import com.railroad.model.entity.Schedule;
 import com.railroad.model.entity.Train;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class TrainService {
@@ -19,16 +21,24 @@ public class TrainService {
     TrainDao trainDao;
 
     private final
+    ScheduleDao scheduleDao;
+
+    private final
     TrainMapper trainMapper;
 
     private final
     WagonService wagonService;
 
+    private final
+    DirectionService directionService;
+
     @Autowired
-    public TrainService(TrainDao trainDao, TrainMapper trainMapper, WagonService wagonService) {
+    public TrainService(TrainDao trainDao, TrainMapper trainMapper, WagonService wagonService, DirectionService directionService, ScheduleDao scheduleDao) {
         this.trainDao = trainDao;
         this.trainMapper = trainMapper;
         this.wagonService = wagonService;
+        this.directionService = directionService;
+        this.scheduleDao = scheduleDao;
     }
 
     /**
@@ -47,13 +57,18 @@ public class TrainService {
      * @return train DTO.
      */
     public TrainDto getTrainById(Long id) {
-        Train train = trainDao.getTrainById(id);
         //if train not exist, then return empty trainDto
-        if (train == null) {
-            return new TrainDto(0L, "", true);
+        if (id == null | trainDao.getTrainById(id) == null) {
+            return getNewTrainDto();
         }
-        TrainDto trainDto = trainMapper.trainToTrainDto(train);
+        TrainDto trainDto = trainMapper.trainToTrainDto(trainDao.getTrainById(id));
+        if (trainDto == null) {
+            return getNewTrainDto();
+        }
         //sort schedules
+        if (trainDto.getSchedules() == null || trainDto.getSchedules().isEmpty()) {
+            return trainDto;
+        }
         Collections.sort(trainDto.getSchedules(),
                 (o1, o2) -> o1.getScheduleId().compareTo(o2.getScheduleId()));
         return trainDto;
@@ -76,13 +91,129 @@ public class TrainService {
      * @return new or current train id.
      */
     public Long saveOrUpdateTrain(TrainDto trainDto) {
+        if (trainDto == null) {
+            return null;
+        }
         if (trainDto.getTrainId() == null || trainDao.getTrainById(trainDto.getTrainId()) == null) {
+            if (trainDto.getTrainNumber() == null || trainDao.getTrainByTrainNumber(trainDto.getTrainNumber()) != null) {
+                return null;
+            }
+            Train train = trainMapper.trainDtoToTrain(trainDto);
+            if (train == null) {
+                return null;
+            }
             //save train and get new id
-            return trainDao.saveTrain(trainMapper.trainDtoToTrain(trainDto));
+            return trainDao.saveTrain(train);
         } else {
+            Train checkTrain = trainDao.getTrainByTrainNumber(trainDto.getTrainNumber());
+            if (checkTrain != null) {
+                if (!Objects.equals(checkTrain.getTrainId(), trainDto.getTrainId())) {
+                    return null;
+                }
+            }
             //update train
+            Train updateTrain = trainMapper.trainDtoToTrain(trainDto);
+            if (updateTrain != null) {
+                trainDao.updateTrain(updateTrain);
+            }
             trainDao.updateTrain(trainMapper.trainDtoToTrain(trainDto));
             return trainDto.getTrainId();
         }
     }
+
+    /**
+     * Removes train by id.
+     *
+     * @param id train id.
+     */
+    public void removeTrainById(Long id) {
+        if (id == null || trainDao.getTrainById(id) == null) {
+            return;
+        }
+        trainDao.removeTrain(id);
+    }
+
+    public SearchResultDto getTrainsByDepStationIdAndArrStationId(Long depStationId, Long arrStationId, String fromTime, String toTime) {
+        List<TrainDto> trainDtos = new ArrayList<>();
+        List<Direction> departureDirection = directionService.getDirectionListByDepStationId(depStationId);
+        List<Direction> arriveDirection = directionService.getDirectionListByArrStationId(arrStationId);
+        List<Schedule> schedules = new ArrayList<>();
+        for (Direction d :
+                departureDirection) {
+            schedules.addAll(scheduleDao.getScheduleListByDirectionId(d.getDirectionId()));
+        }
+        List<Long> trainIds = new ArrayList<>();
+        for (Schedule s :
+                schedules) {
+            for (Direction d :
+                    arriveDirection) {
+                List<Long> ids = scheduleDao.getTrainIdsByTrainIdAndDirectionId(s.getTrainId(), d.getDirectionId());
+                trainIds.addAll(ids);
+            }
+        }
+        for (Long l :
+                trainIds) {
+            trainDtos.add(trainMapper.trainToTrainDto(trainDao.getTrainById(l)));
+        }
+        List<TrainDto> removeTrainsDtos = new ArrayList<>();
+        for (TrainDto t :
+                trainDtos) {
+            Long depScheduleId = 0L;
+            Long arrScheduleId = 0L;
+            for (ScheduleDto s :
+                    t.getSchedules()) {
+                if (Objects.equals(s.getDirectionByDirectionId().getDepStationId(), depStationId)) {
+                    depScheduleId = s.getScheduleId();
+                    if (!isTimeBetweenTwoTime(fromTime, toTime, s.getDepartureTime())) {
+                        removeTrainsDtos.add(t);
+                        break;
+                    }
+                }
+                if (Objects.equals(s.getDirectionByDirectionId().getArrStationId(), arrStationId)) {
+                    arrScheduleId = s.getScheduleId();
+                }
+                if (depScheduleId != 0L && arrScheduleId != 0L && depScheduleId > arrScheduleId) {
+                    removeTrainsDtos.add(t);
+                }
+            }
+        }
+        trainDtos.removeAll(removeTrainsDtos);
+        return new SearchResultDto(depStationId, arrStationId, fromTime, toTime, trainDtos);
+    }
+
+    public boolean isTimeBetweenTwoTime(String initialTime, String finalTime, String currentTime) {
+        String reg = "^([0-1][0-9]|2[0-3]):([0-5][0-9])$";
+        if (initialTime.matches(reg) && finalTime.matches(reg) && currentTime.matches(reg)) {
+            try {
+                //Start Time
+                Date inTime = new SimpleDateFormat("HH:mm").parse(initialTime);
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.setTime(inTime);
+                //Current Time
+                Date checkTime = new SimpleDateFormat("HH:mm").parse(currentTime);
+                Calendar calendar3 = Calendar.getInstance();
+                calendar3.setTime(checkTime);
+                //End Time
+                Date finTime = new SimpleDateFormat("HH:mm").parse(finalTime);
+                Calendar calendar2 = Calendar.getInstance();
+                calendar2.setTime(finTime);
+                if (finalTime.compareTo(initialTime) < 0) {
+                    calendar2.add(Calendar.DATE, 1);
+                    calendar3.add(Calendar.DATE, 1);
+                }
+                Date actualTime = calendar3.getTime();
+                if ((actualTime.after(calendar1.getTime()) || actualTime.compareTo(calendar1.getTime()) == 0) && actualTime.before(calendar2.getTime())) {
+                    return true;
+                }
+            } catch (ParseException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private TrainDto getNewTrainDto() {
+        return new TrainDto(0L, "", true);
+    }
+
 }

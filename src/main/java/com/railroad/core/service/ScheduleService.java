@@ -1,12 +1,16 @@
 package com.railroad.core.service;
 
-import com.railroad.model.dao.DirectionDao;
+import com.railroad.core.mapper.ScheduleMapper;
 import com.railroad.model.dao.ScheduleDao;
 import com.railroad.model.dto.ScheduleAddDto;
+import com.railroad.model.dto.ScheduleDto;
 import com.railroad.model.entity.Direction;
 import com.railroad.model.entity.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ScheduleService {
@@ -17,10 +21,14 @@ public class ScheduleService {
     private final
     DirectionService directionService;
 
+    private final
+    ScheduleMapper scheduleMapper;
+
     @Autowired
-    public ScheduleService(ScheduleDao scheduleDao, DirectionService directionService) {
+    public ScheduleService(ScheduleDao scheduleDao, DirectionService directionService, ScheduleMapper scheduleMapper) {
         this.scheduleDao = scheduleDao;
         this.directionService = directionService;
+        this.scheduleMapper = scheduleMapper;
     }
 
 
@@ -38,5 +46,16 @@ public class ScheduleService {
 
     public void removeScheduleById(Long id) {
         scheduleDao.removeScheduleById(id);
+    }
+
+    public List<ScheduleDto> getScheduleListByStationId(Long id) {
+        List<Direction> directions = directionService.getDirectionListByDepStationId(id);
+        List<ScheduleDto> scheduleDtos = new ArrayList<>();
+        for (Direction d :
+                directions) {
+            List<ScheduleDto> scheduleListByDirectionId = scheduleMapper.scheduleListToScheduleDtoList(scheduleDao.getScheduleListByDirectionId(d.getDirectionId()));
+            scheduleDtos.addAll(scheduleListByDirectionId);
+        }
+        return scheduleDtos;
     }
 }

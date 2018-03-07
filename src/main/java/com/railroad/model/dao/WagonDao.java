@@ -1,14 +1,14 @@
 package com.railroad.model.dao;
 
-        import com.railroad.model.entity.Wagon;
-        import com.railroad.model.entity.WagonType;
-        import org.hibernate.Query;
-        import org.hibernate.Session;
-        import org.hibernate.SessionFactory;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.stereotype.Repository;
+import com.railroad.model.entity.Wagon;
+import com.railroad.model.entity.WagonType;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-        import java.util.List;
+import java.util.List;
 
 @Repository
 public class WagonDao {
@@ -29,7 +29,7 @@ public class WagonDao {
         Session session = sessionFactory.openSession();
         Query query = session.createQuery("select trainId from Wagon where wagonId = :id ");
         query.setParameter("id", id);
-        return (Long)query.uniqueResult();
+        return (Long) query.uniqueResult();
     }
 
     public void removeWagonById(Long id) {

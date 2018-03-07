@@ -12,20 +12,31 @@
                     <li role="presentation" class="<c:if test="${tabpanel==true||tabpanel==null}">active</c:if>">
                         <a href="#train" aria-controls="train" role="tab" data-toggle="tab">Train</a>
                     </li>
-                    <li role="presentation" class="<c:if test="${tabpanel==false}">active</c:if>">
-                        <a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Schedule</a>
-                    </li>
+                    <c:if test="${train.trainId!=0}">
+                        <li role="presentation" class="<c:if test="${tabpanel==false}">active</c:if> ">
+                            <a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Schedule</a>
+                        </li>
+                    </c:if>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
 
-                    <div role="tabpanel" class="tab-pane <c:if test="${tabpanel==true||tabpanel==null}">active</c:if>" id="train">
+                    <div role="tabpanel" class="tab-pane <c:if test="${tabpanel==true||tabpanel==null}">active</c:if>"
+                         id="train">
+
                         <h3>${train.trainNumber}</h3>
                         <form:form method="POST" action="/train/add" modelAttribute="train">
                             <form:hidden path="trainId"/>
+                            <div class="row">
+                                <c:if test="${msg!=null}">
+                                    <div class="alert alert-danger col-xs-12 form-group" role="alert">
+                                        <p>${msg}</p>
+                                    </div>
+                                </c:if>
+                            </div>
                             <div class="form-group">
-                                <form:input path="trainNumber" class="form-control"/>
+                                <form:input path="trainNumber" class="form-control" required="true"/>
                             </div>
                             <div class="checkbox">
                                 <label>
@@ -33,6 +44,7 @@
                                     is enabled
                                 </label>
                             </div>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <button type="submit" class="btn btn-primary">Save</button>
                             <a href="/train" class="btn btn-default">Back</a>
                         </form:form>
@@ -44,7 +56,7 @@
                                         ${w.wagonTitle} ${w.wagonType}
                                 </div>
                                 <div class="col-md-2"><a href="/wagon/${w.wagonId}/delete"
-                                                         class="btn btn-danger glyphicon glyphicon-trash"></a></div>
+                                                         class="js-delete-wagon-confirm btn btn-danger glyphicon glyphicon-trash"></a></div>
                             </div>
                         </c:forEach>
 
@@ -61,12 +73,14 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <input name="wagonTitle" class="form-control"/>
+                                        <input name="wagonTitle" class="form-control" required="true"/>
                                     </div>
                                     <div class="col-md-2">
                                         <button type="submit" class="btn btn-success glyphicon glyphicon-plus"></button>
                                     </div>
                                 </div>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
                             </form>
                         </c:if>
 
@@ -93,7 +107,9 @@
                                 </div>
                             </div>
                             <c:if test="${loop.last}">
-                               <a href="/schedule/${sch.scheduleId}/delete" class="btn btn-danger">Remove</a>
+
+                                <a href="/schedule/${sch.scheduleId}/delete" class="js-delete-schedule-confirm btn btn-danger"><span
+                                        class="glyphicon glyphicon-remove"></span> Remove</a>
                             </c:if>
                             <hr/>
                         </c:forEach>
@@ -101,7 +117,7 @@
                             <input type="hidden" name="trainId" value="${train.trainId}"/>
                             <div class="row">
                                 <div class="col-md-7 form-group">
-                                    <select id="dep_st" name="depStationId" class="form-control">
+                                    <select id="dep_st" name="depStationId" class="form-control" required="true">
                                         <c:if test="${train.schedules.size()==0}">
                                             <option value="">Select</option>
                                             <c:forEach var="st" items="${stations}">
@@ -116,12 +132,13 @@
                                     </select>
                                 </div>
                                 <div class="col-md-5 form-group">
-                                    <input class="form-control" type="time" id="depTime" name="departureTime"/>
+                                    <input class="form-control" type="time" id="depTime" name="departureTime"
+                                           required="true"/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-7 form-group">
-                                    <select id="arr_st" name="arrStationId" class="form-control">
+                                    <select id="arr_st" name="arrStationId" class="form-control" required="true">
                                         <option value="">Select</option>
                                         <c:forEach var="st" items="${stations}">
                                             <option value="${st.stationId}">${st.stationTitle}</option>
@@ -129,10 +146,14 @@
                                     </select>
                                 </div>
                                 <div class="col-md-5 form-group">
-                                    <input class="form-control" type="time" id="arrTime" name="arriveTime"/>
+                                    <input class="form-control" type="time" id="arrTime" name="arriveTime"
+                                           required="true"/>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            <button type="submit" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-ok"></span> Save
+                            </button>
                         </form:form>
                     </div>
                 </div>
@@ -142,8 +163,22 @@
 </main>
 
 <script>
-    console.log('tabpanel', ${tabpanel});
-    //variebles
+    //remove confirm
+    $(function () {
+        $('.js-delete-wagon-confirm').click(function (e) {
+            if (!confirm('Delete this wagon?')) {
+                e.preventDefault();
+            }
+        });
+    });
+    $(function () {
+        $('.js-delete-schedule-confirm').click(function (e) {
+            if (!confirm('Delete this schedule?')) {
+                e.preventDefault();
+            }
+        });
+    });
+    //variables
     var train = [
         <c:forEach var="sch" items="${train.schedules}" varStatus="loop">
         {

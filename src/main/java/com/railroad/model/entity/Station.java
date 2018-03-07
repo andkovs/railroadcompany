@@ -11,6 +11,8 @@ public class Station {
     private Double lng;
     private Collection<Direction> directionsByStationId;
     private Collection<Direction> directionsByStationId_0;
+    private Collection<Ticket> ticketsByStationId;
+    private Collection<Ticket> ticketsByStationId_0;
 
     public Station() {
     }
@@ -104,5 +106,23 @@ public class Station {
 
     public void setDirectionsByStationId_0(Collection<Direction> directionsByStationId_0) {
         this.directionsByStationId_0 = directionsByStationId_0;
+    }
+
+    @OneToMany(mappedBy = "stationByDepartureStationId")
+    public Collection<Ticket> getTicketsByStationId() {
+        return ticketsByStationId;
+    }
+
+    public void setTicketsByStationId(Collection<Ticket> ticketsByStationId) {
+        this.ticketsByStationId = ticketsByStationId;
+    }
+
+    @OneToMany(mappedBy = "stationByArriveStationId")
+    public Collection<Ticket> getTicketsByStationId_0() {
+        return ticketsByStationId_0;
+    }
+
+    public void setTicketsByStationId_0(Collection<Ticket> ticketsByStationId_0) {
+        this.ticketsByStationId_0 = ticketsByStationId_0;
     }
 }

@@ -1,6 +1,7 @@
 package com.railroad.model.entity;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 public class Wagon {
@@ -10,6 +11,7 @@ public class Wagon {
     private String wagonTitle;
     private Train trainByTrainId;
     private WagonType wagonTypeByWagonTypeId;
+    private Collection<Ticket> ticketsByWagonId;
 
     public Wagon() {
     }
@@ -112,5 +114,14 @@ public class Wagon {
 
     public void setWagonTypeByWagonTypeId(WagonType wagonTypeByWagonTypeId) {
         this.wagonTypeByWagonTypeId = wagonTypeByWagonTypeId;
+    }
+
+    @OneToMany(mappedBy = "wagonByWagonId")
+    public Collection<Ticket> getTicketsByWagonId() {
+        return ticketsByWagonId;
+    }
+
+    public void setTicketsByWagonId(Collection<Ticket> ticketsByWagonId) {
+        this.ticketsByWagonId = ticketsByWagonId;
     }
 }

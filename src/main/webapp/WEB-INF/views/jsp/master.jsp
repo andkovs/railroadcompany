@@ -46,6 +46,14 @@
     <%@include file="login.jsp" %>
 </c:if>
 
+<c:if test="${userClickTickets == true}">
+    <%@include file="tickets.jsp" %>
+</c:if>
+
+<c:if test="${userClickTicket == true}">
+    <%@include file="ticket.jsp" %>
+</c:if>
+
 </body>
 
 

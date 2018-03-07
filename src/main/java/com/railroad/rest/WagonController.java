@@ -33,7 +33,7 @@ public class WagonController {
         Long trainId = wagonService.getTrainIdByWagonId(id);
         wagonService.removeWagonById(id);
         red.addFlashAttribute("tabpanel", true);
-        return new ModelAndView("redirect:/train/"+trainId);
+        return new ModelAndView("redirect:/train/" + trainId);
     }
 
     /**

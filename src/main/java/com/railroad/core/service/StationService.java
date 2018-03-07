@@ -3,14 +3,13 @@ package com.railroad.core.service;
 import com.railroad.core.mapper.StationMapper;
 import com.railroad.model.dao.StationDao;
 import com.railroad.model.dto.DirectionDto;
-import com.railroad.model.dto.NeighbouringStationDto;
 import com.railroad.model.dto.StationDto;
 import com.railroad.model.entity.Direction;
+import com.railroad.model.entity.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -48,13 +47,19 @@ public class StationService {
      */
     public StationDto getStationById(Long id) {
         //if Station not exist, then return empty StationDto
-        if (stationDao.getStationById(id) == null) {
-            return new StationDto(0L, "", 48.867928, 2.34278);
+        if (id == null || stationDao.getStationById(id) == null) {
+            return getNewStationDto();
         }
         //get stationDto by id
         StationDto stationDto = stationMapper.stationToStationDto(stationDao.getStationById(id));
+        if (stationDto == null) {
+            return getNewStationDto();
+        }
         //get list of directions, which can we get from current station
         List<Direction> directions = directionService.getDirectionListByDepStationId(id);
+        if (directions == null) {
+            directions = new ArrayList<>();
+        }
         for (Direction direction :
                 directions) {
             //gets id list by the arrive stationId from directions
@@ -84,17 +89,38 @@ public class StationService {
      * @return new or current station id.
      */
     public Long saveOrUpdateStation(StationDto stationDto) {
+        if (stationDto == null) {
+            return null;
+        }
         if (stationDto.getStationId() == null || stationDao.getStationById(stationDto.getStationId()) == null) {
             //save station and get new id
-            Long id = stationDao.saveStation(stationMapper.stationDtoToStation(stationDto));
+            if (stationDto.getStationTitle() == null || stationDao.getStationByStationTitle(stationDto.getStationTitle()) != null) {
+                return null;
+            }
+            Station station = stationMapper.stationDtoToStation(stationDto);
+            if (station == null) {
+                return null;
+            }
+            Long id = stationDao.saveStation(station);
+            if (id == null) {
+                return null;
+            }
             stationDto.setStationId(id);
             //save directions
             directionService.saveDirections(stationDto);
             return id;
         } else {
+            Station checkStation = stationDao.getStationByStationTitle(stationDto.getStationTitle());
+            if (checkStation != null) {
+                if (!Objects.equals(checkStation.getStationId(), stationDto.getStationId())) {
+                    return null;
+                }
+            }
             //update station
-            stationDao.updateStation(stationMapper.stationDtoToStation(stationDto));
-            //
+            Station updateStation = stationMapper.stationDtoToStation(stationDto);
+            if (updateStation != null) {
+                stationDao.updateStation(updateStation);
+            }
             directionService.mergeDirections(stationDto);
             return stationDto.getStationId();
         }
@@ -118,12 +144,12 @@ public class StationService {
      *
      * @return list of neighbouring station DTO's.
      */
-    public List<NeighbouringStationDto> getAllNeighbouringStation() {
-        List<DirectionDto> directions = directionService.getAllDirections();
-        return directions.stream().map(d -> new NeighbouringStationDto(
-                stationDao.getStationById(d.getDepStationId()),
-                stationDao.getStationById(d.getArrStationId())
-        )).collect(Collectors.toList());
+    public List<DirectionDto> getAllNeighbouringStation() {
+        List<DirectionDto> directionDtos = directionService.getAllDirections();
+        if (directionDtos == null) {
+            return new ArrayList<>();
+        }
+        return directionDtos;
     }
 
     /**
@@ -132,9 +158,13 @@ public class StationService {
      * @param id current station id.
      * @return list of neighbouring station DTO's without current.
      */
-    public List<NeighbouringStationDto> getAllNeighbouringStationWithoutCurrent(Long id) {
-        List<NeighbouringStationDto> neighbouringStationDtos = getAllNeighbouringStation();
-        neighbouringStationDtos.removeIf(s -> s.getDepartureStation().getStationId().equals(id) || s.getArriveStation().getStationId().equals(id));
+    public List<DirectionDto> getAllNeighbouringStationWithoutCurrent(Long id) {
+        List<DirectionDto> neighbouringStationDtos = getAllNeighbouringStation();
+        neighbouringStationDtos.removeIf(s -> s.getStationByDepStationId().getStationId().equals(id) || s.getStationByArrStationId().getStationId().equals(id));
         return neighbouringStationDtos;
+    }
+
+    private StationDto getNewStationDto() {
+        return new StationDto(0L, "", 49.88, 3.35);
     }
 }

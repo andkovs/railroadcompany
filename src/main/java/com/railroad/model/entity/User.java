@@ -2,6 +2,7 @@ package com.railroad.model.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,8 +19,22 @@ public class User {
     private String email;
     private Boolean enabled;
     private Set<Role> roles = new HashSet<>();
+    private Collection<Ticket> ticketsByUserId;
 
     public User() {
+    }
+
+    public User(Long userId, String login, String password, String lastName, String firstName, String middleName, Timestamp birthDate, String phone, String email, Boolean enabled) {
+        this.userId = userId;
+        this.login = login;
+        this.password = password;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.birthDate = birthDate;
+        this.phone = phone;
+        this.email = email;
+        this.enabled = enabled;
     }
 
     public User(Long userId, String login, String password, String lastName, String firstName, String middleName, Timestamp birthDate, String phone, String email, Boolean enabled, Set<Role> roles) {
@@ -163,7 +178,6 @@ public class User {
         this.roles = roles;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -198,5 +212,14 @@ public class User {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (enabled != null ? enabled.hashCode() : 0);
         return result;
+    }
+
+    @OneToMany(mappedBy = "userByUserId")
+    public Collection<Ticket> getTicketsByUserId() {
+        return ticketsByUserId;
+    }
+
+    public void setTicketsByUserId(Collection<Ticket> ticketsByUserId) {
+        this.ticketsByUserId = ticketsByUserId;
     }
 }

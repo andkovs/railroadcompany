@@ -10,6 +10,7 @@ public class Train {
     private Boolean enabled;
     private Collection<Wagon> wagonsByTrainId;
     private Collection<Schedule> schedulesByTrainId;
+    private Collection<Ticket> ticketsByTrainId;
 
     public Train() {
     }
@@ -91,5 +92,12 @@ public class Train {
         this.schedulesByTrainId = schedulesByTrainId;
     }
 
+    @OneToMany(mappedBy = "trainByTrainId")
+    public Collection<Ticket> getTicketsByTrainId() {
+        return ticketsByTrainId;
+    }
 
+    public void setTicketsByTrainId(Collection<Ticket> ticketsByTrainId) {
+        this.ticketsByTrainId = ticketsByTrainId;
+    }
 }

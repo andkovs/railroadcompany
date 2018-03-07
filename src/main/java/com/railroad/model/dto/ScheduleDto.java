@@ -1,6 +1,7 @@
 package com.railroad.model.dto;
 
 import com.railroad.model.entity.Direction;
+import com.railroad.model.entity.Train;
 
 public class ScheduleDto {
 
@@ -9,6 +10,7 @@ public class ScheduleDto {
     private Long trainId;
     private String departureTime;
     private String arriveTime;
+    private Train trainByTrainId;
     private Direction directionByDirectionId;
 
     public ScheduleDto() {
@@ -21,6 +23,24 @@ public class ScheduleDto {
         this.departureTime = departureTime;
         this.arriveTime = arriveTime;
         this.directionByDirectionId = directionByDirectionId;
+    }
+
+    public ScheduleDto(Long scheduleId, Long directionId, Long trainId, String departureTime, String arriveTime, Train trainByTrainId, Direction directionByDirectionId) {
+        this.scheduleId = scheduleId;
+        this.directionId = directionId;
+        this.trainId = trainId;
+        this.departureTime = departureTime;
+        this.arriveTime = arriveTime;
+        this.trainByTrainId = trainByTrainId;
+        this.directionByDirectionId = directionByDirectionId;
+    }
+
+    public Train getTrainByTrainId() {
+        return trainByTrainId;
+    }
+
+    public void setTrainByTrainId(Train trainByTrainId) {
+        this.trainByTrainId = trainByTrainId;
     }
 
     public Long getScheduleId() {

@@ -7,6 +7,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class ScheduleDao {
 
@@ -34,7 +36,7 @@ public class ScheduleDao {
         Session session = sessionFactory.openSession();
         Query query = session.createQuery("select trainId from Schedule where scheduleId = :id ");
         query.setParameter("id", id);
-        return (Long)query.uniqueResult();
+        return (Long) query.uniqueResult();
     }
 
     public void removeScheduleById(Long id) {
@@ -42,5 +44,21 @@ public class ScheduleDao {
         Query query = session.createQuery("delete from Schedule where scheduleId= :id");
         query.setParameter("id", id);
         query.executeUpdate();
+    }
+
+    public List<Schedule> getScheduleListByDirectionId(Long id) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("from Schedule where directionId= :id");
+        query.setParameter("id", id);
+        List<Schedule> schedules = query.list();
+        return schedules;
+    }
+
+    public List<Long> getTrainIdsByTrainIdAndDirectionId(Long trainId, Long directionId) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("select trainId from Schedule where trainId = :trainId AND directionId = :directionId ");
+        query.setParameter("trainId", trainId);
+        query.setParameter("directionId", directionId);
+        return query.list();
     }
 }

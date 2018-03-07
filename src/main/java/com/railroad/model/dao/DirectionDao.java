@@ -37,7 +37,7 @@ public class DirectionDao {
      * @param id departure station id.
      * @return list of directions.
      */
-    public List getDirectionListByDepStationId(Long id) {
+    public List<Direction> getDirectionListByDepStationId(Long id) {
         Session session = sessionFactory.openSession();
         Query query = session.createQuery("from Direction where depStationId = :id ");
         query.setParameter("id", id);
@@ -93,5 +93,19 @@ public class DirectionDao {
         query.setParameter("dId", depStationId);
         query.setParameter("aId", arrStationId);
         return (Long)query.uniqueResult();
+    }
+
+    /**
+     * Gets list of directions from DB by
+     * arrive station id.
+     *
+     * @param id arrive station id.
+     * @return list of directions.
+     */
+    public List<Direction> getDirectionListByArrStationId(Long id) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("from Direction where arrStationId = :id ");
+        query.setParameter("id", id);
+        return query.list();
     }
 }

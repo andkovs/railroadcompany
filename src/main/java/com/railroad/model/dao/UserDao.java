@@ -1,11 +1,11 @@
 package com.railroad.model.dao;
 
-import com.railroad.model.entity.Station;
 import com.railroad.model.entity.User;
 import com.railroad.model.entity.UserRole;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -61,8 +61,14 @@ public class UserDao {
      */
     public void updateUser(User user) {
         Session session = sessionFactory.openSession();
-        session.update(user);
-        session.flush();
+        Query query = session.createQuery("update User set firstName=:firstName, lastName=:lastName, middleName=:middleName, phone=:phone, email=:email where userId=:userId");
+        query.setParameter("firstName", user.getFirstName());
+        query.setParameter("lastName", user.getLastName());
+        query.setParameter("middleName", user.getMiddleName());
+        query.setParameter("phone", user.getPhone());
+        query.setParameter("email", user.getEmail());
+        query.setParameter("userId", user.getUserId());
+        query.executeUpdate();
     }
 
     /**

@@ -35,7 +35,7 @@ public class DirectionService {
      * @param id departure station's id.
      * @return list of direction.s
      */
-    List getDirectionListByDepStationId(Long id) {
+    List<Direction> getDirectionListByDepStationId(Long id) {
         return directionDao.getDirectionListByDepStationId(id);
     }
 
@@ -112,4 +112,16 @@ public class DirectionService {
     Long getDirectionIdByDepStationIdAndArriveStationId(Long depStationId, Long arrStationId) {
         return directionDao.getDirectionIdByDepStationIdAndArriveStationIdFromDb(depStationId, arrStationId);
     }
+
+    /**
+     * Get list of directions by
+     * arrive station's id.
+     *
+     * @param id arrive station's id.
+     * @return list of direction's
+     */
+    public List<Direction> getDirectionListByArrStationId(Long id) {
+        return directionDao.getDirectionListByArrStationId(id);
+    }
+
 }

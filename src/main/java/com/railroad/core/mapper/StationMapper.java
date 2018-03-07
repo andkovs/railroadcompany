@@ -4,6 +4,7 @@ import com.railroad.model.dto.StationDto;
 import com.railroad.model.entity.Station;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,12 +12,15 @@ import java.util.stream.Collectors;
 public class StationMapper {
 
     /**
-     * Converts list of stations to list of stations DTO
+     * Converts list of stations to list of stations DTO's.
      *
-     * @param stations list od stations
-     * @return list of stationsDto
+     * @param stations list od stations.
+     * @return list of station DTO's.
      */
-    public List stationListToStationDtoList(List<Station> stations) {
+    public List<StationDto> stationListToStationDtoList(List<Station> stations) {
+        if(stations==null){
+            return new ArrayList();
+        }
         return stations.stream().map(station -> new StationDto(
                 station.getStationId(),
                 station.getStationTitle(),
@@ -27,10 +31,13 @@ public class StationMapper {
     /**
      * Converts station to stationDto
      *
-     * @param station Convertible station
-     * @return stationDto
+     * @param station Convertible station.
+     * @return station DTO.
      */
     public StationDto stationToStationDto(Station station) {
+        if(station==null){
+            return null;
+        }
         return new StationDto(
                 station.getStationId(),
                 station.getStationTitle(),
@@ -39,12 +46,15 @@ public class StationMapper {
     }
 
     /**
-     * Converts stationDto to station
+     * Converts station DTO to station.
      *
-     * @param stationDto Convertible stationDto
-     * @return station
+     * @param stationDto convertible station DTO.
+     * @return station.
      */
     public Station stationDtoToStation(StationDto stationDto) {
+        if(stationDto==null){
+            return null;
+        }
         return new Station(stationDto.getStationId(),
                 stationDto.getStationTitle(),
                 stationDto.getLat(),

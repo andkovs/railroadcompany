@@ -16,7 +16,8 @@
 
                     <c:if test="${not empty trains}">
                         <c:forEach var="train" items="${trains}">
-                            <tr>
+                            <tr class="accordion-toggle" data-toggle="collapse"
+                                data-target="#collapse<c:out value="${train.trainId}"/>">
                                 <td>
                                     <p>${train.trainNumber}</p>
                                 </td>
@@ -30,14 +31,16 @@
                                     <p>${train.schedules[train.schedules.size()-1].directionByDirectionId.stationByArrStationId.stationTitle}</p>
                                 </td>
                                 <td>
-                                    <p>${train.schedules[0].arriveTime}</p>
+                                    <p>${train.schedules[train.schedules.size()-1].arriveTime}</p>
                                 </td>
                                 <td>
                                     <c:forEach var="w" items="${train.wagons}">
-                                        <c:if test="${w.wagonType=='third-class sleeper'}"><img src="/resources/img/wagon_blue75.png"></c:if>
+                                        <c:if test="${w.wagonType=='third-class sleeper'}"><img
+                                                src="/resources/img/wagon_blue75.png"></c:if>
                                     </c:forEach>
                                     <c:forEach var="w" items="${train.wagons}">
-                                        <c:if test="${w.wagonType=='second-class sleeper'}"><img src="/resources/img/wagon_green75.png"></c:if>
+                                        <c:if test="${w.wagonType=='second-class sleeper'}"><img
+                                                src="/resources/img/wagon_green75.png"></c:if>
                                     </c:forEach>
                                 </td>
                                 <td>
@@ -46,17 +49,41 @@
                                 </td>
                                 <td>
                                     <a href="<c:url value="/train/${train.trainId}/delete"/>"
-                                       class="text-danger glyphicon glyphicon-trash"></a>
+                                       class="js-delete-confirm text-danger glyphicon glyphicon-trash"></a>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td collspan="3">
+                                    <div id="collapse<c:out value="${train.trainId}"/>" class="collapse out">
+                                        <c:forEach var="ticket" items="${train.tickets}">
+                                            <h4>${ticket.user.lastName} ${ticket.user.firstName} </h4>
+                                        </c:forEach>
+                                    </div>
+                                </td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         </c:forEach>
                     </c:if>
-
                 </table>
                 <a href="/train/0" class="btn btn-success">New train</a>
             </div>
         </div>
     </div>
-
 </main>
+
+<script>
+    $(function () {
+        $('.js-delete-confirm').click(function (e) {
+            if (!confirm('Delete this train?')) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
 
