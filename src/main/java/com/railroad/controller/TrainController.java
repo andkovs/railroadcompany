@@ -1,4 +1,4 @@
-package com.railroad.rest;
+package com.railroad.controller;
 
 import com.railroad.core.service.DirectionService;
 import com.railroad.core.service.StationService;
@@ -127,6 +127,48 @@ public class TrainController {
         logger.info(userName + " entering method removeTrain()");
 
         trainService.removeTrainById(id);
+        return new ModelAndView("redirect:/train/");
+    }
+
+    /**
+     * Process a request for enabled/disabled train
+     * and returns ModelAndView for trains.jsp
+     *
+     * @param id        enabled/disabled train id.
+     * @param principal security principal.
+     * @return model and view.
+     */
+    @RequestMapping(value = "/train/{id}/enable", method = RequestMethod.GET)
+    public ModelAndView enableTrain(@PathVariable("id") Long id, Principal principal) {
+        String userName = "Guest";
+        if (principal != null) {
+            userName = principal.getName();
+        }
+        logger.info(userName + " entering method enableTrain()");
+
+        trainService.enableOrDisableTrainById(id);
+        return new ModelAndView("redirect:/train/");
+    }
+
+    /**
+     * Process a request for set time shift
+     * and returns ModelAndView for trains.jsp
+     *
+     * @param id        enabled/disabled train id.
+     * @param principal security principal.
+     * @return model and view.
+     */
+    @RequestMapping(value = "/train/{id}/shift", method = RequestMethod.POST)
+    public ModelAndView setShiftByTrainId(@PathVariable("id") Long id,
+                                          Principal principal,
+                                          Integer shift) {
+        String userName = "Guest";
+        if (principal != null) {
+            userName = principal.getName();
+        }
+        logger.info(userName + " entering method setShiftByTrainId()");
+
+        trainService.setShiftByTrainId(id, shift);
         return new ModelAndView("redirect:/train/");
     }
 }

@@ -1,5 +1,6 @@
 package com.railroad.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.railroad.model.entity.Direction;
 import com.railroad.model.entity.Train;
 
@@ -10,7 +11,9 @@ public class ScheduleDto {
     private Long trainId;
     private String departureTime;
     private String arriveTime;
+    @JsonIgnore
     private Train trainByTrainId;
+    @JsonIgnore
     private Direction directionByDirectionId;
 
     public ScheduleDto() {

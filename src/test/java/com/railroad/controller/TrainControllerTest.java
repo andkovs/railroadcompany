@@ -1,12 +1,8 @@
-package com.railroad.rest;
+package com.railroad.controller;
 
 import com.railroad.config.AppConfig;
-import com.railroad.core.service.StationService;
 import com.railroad.core.service.TrainService;
-import com.railroad.model.dto.NeighbouringStationDto;
-import com.railroad.model.dto.StationDto;
 import com.railroad.model.dto.TrainDto;
-import com.railroad.model.entity.Station;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +23,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;

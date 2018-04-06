@@ -1,0 +1,1 @@
+ALTER TABLE `train` ADD `shift` INT( 11 ) DEFAULT 0;

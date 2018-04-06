@@ -1,11 +1,8 @@
-package com.railroad.rest;
+package com.railroad.controller;
 
 import com.railroad.config.AppConfig;
 import com.railroad.core.service.StationService;
-import com.railroad.model.dto.NeighbouringStationDto;
 import com.railroad.model.dto.StationDto;
-import com.railroad.model.entity.Station;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +15,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
-
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.AllOf.allOf;

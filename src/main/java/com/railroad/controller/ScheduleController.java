@@ -1,4 +1,4 @@
-package com.railroad.rest;
+package com.railroad.controller;
 
 import com.railroad.core.service.ScheduleService;
 import com.railroad.core.service.StationService;
@@ -49,7 +49,7 @@ public class ScheduleController {
         ModelAndView mav = new ModelAndView("master");
         mav.addObject("stations", stationService.getAllStations());
         mav.addObject("station", stationService.getStationById(id));
-        mav.addObject("schedules", scheduleService.getScheduleListByStationId(id));
+        mav.addObject("schedules", scheduleService.getScheduleListByDepStationId(id));
         mav.addObject("title", "Schedule");
         mav.addObject("userClickHome", true);
         return mav;

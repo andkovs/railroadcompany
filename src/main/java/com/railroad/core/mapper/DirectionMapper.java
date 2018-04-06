@@ -33,16 +33,17 @@ public class DirectionMapper {
 
     /**
      * Converts list of Directions to list of Direction DTO's.
+     *
      * @param directions list of directions.
      * @return list of direction DTO's
      */
     public List<DirectionDto> directionListToDirectionDtoList(List<Direction> directions) {
         return directions.stream().map(d -> new DirectionDto(
-               d.getDirectionId(),
-               d.getDepStationId(),
-               d.getArrStationId(),
-               d.getStationByDepStationId(),
-               d.getStationByArrStationId()
-       )).collect(Collectors.toList());
+                d.getDirectionId(),
+                d.getDepStationId(),
+                d.getArrStationId(),
+                d.getStationByDepStationId(),
+                d.getStationByArrStationId()
+        )).collect(Collectors.toList());
     }
 }

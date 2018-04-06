@@ -61,4 +61,12 @@ public class ScheduleDao {
         query.setParameter("directionId", directionId);
         return query.list();
     }
+
+    public Schedule getScheduleByTrainIdAndDirectionId(Long trainId, Long directionId) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("from Schedule where trainId = :trainId AND directionId = :directionId ");
+        query.setParameter("trainId", trainId);
+        query.setParameter("directionId", directionId);
+        return (Schedule) query.uniqueResult();
+    }
 }

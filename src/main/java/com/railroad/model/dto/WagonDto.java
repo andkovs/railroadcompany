@@ -1,5 +1,6 @@
 package com.railroad.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.railroad.model.entity.WagonType;
 
 public class WagonDto {
@@ -7,6 +8,7 @@ public class WagonDto {
     private Long trainId;
     private String wagonType;
     private String wagonTitle;
+    @JsonIgnore
     private WagonType wagonTypeObj;
 
     public WagonDto() {

@@ -18,7 +18,7 @@ public class StationMapper {
      * @return list of station DTO's.
      */
     public List<StationDto> stationListToStationDtoList(List<Station> stations) {
-        if(stations==null){
+        if (stations == null) {
             return new ArrayList();
         }
         return stations.stream().map(station -> new StationDto(
@@ -35,7 +35,7 @@ public class StationMapper {
      * @return station DTO.
      */
     public StationDto stationToStationDto(Station station) {
-        if(station==null){
+        if (station == null) {
             return null;
         }
         return new StationDto(
@@ -52,7 +52,7 @@ public class StationMapper {
      * @return station.
      */
     public Station stationDtoToStation(StationDto stationDto) {
-        if(stationDto==null){
+        if (stationDto == null) {
             return null;
         }
         return new Station(stationDto.getStationId(),

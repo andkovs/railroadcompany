@@ -1,5 +1,6 @@
 package com.railroad.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResultDto {
@@ -8,17 +9,17 @@ public class SearchResultDto {
     private Long arrStationId;
     private String fromTime;
     private String toTime;
-    private List<TrainDto> trains;
+    private List<PathTrainsDto> pathTrains = new ArrayList<>();
 
     public SearchResultDto() {
     }
 
-    public SearchResultDto(Long depStationId, Long arrStationId, String fromTime, String toTime, List<TrainDto> trains) {
+    public SearchResultDto(Long depStationId, Long arrStationId, String fromTime, String toTime, List<PathTrainsDto> pathTrains) {
         this.depStationId = depStationId;
         this.arrStationId = arrStationId;
         this.fromTime = fromTime;
         this.toTime = toTime;
-        this.trains = trains;
+        this.pathTrains = pathTrains;
     }
 
     public Long getDepStationId() {
@@ -53,11 +54,11 @@ public class SearchResultDto {
         this.toTime = toTime;
     }
 
-    public List<TrainDto> getTrains() {
-        return trains;
+    public List<PathTrainsDto> getPathTrains() {
+        return pathTrains;
     }
 
-    public void setTrains(List<TrainDto> trains) {
-        this.trains = trains;
+    public void setPathTrains(List<PathTrainsDto> pathTrains) {
+        this.pathTrains = pathTrains;
     }
 }

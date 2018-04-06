@@ -7,7 +7,7 @@ import com.railroad.model.dao.UserDao;
 import com.railroad.model.dto.*;
 import com.railroad.model.entity.Ticket;
 import com.railroad.model.entity.User;
-import com.railroad.rest.MasterController;
+import com.railroad.controller.MasterController;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

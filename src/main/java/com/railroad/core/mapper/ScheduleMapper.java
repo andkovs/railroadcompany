@@ -10,9 +10,15 @@ import java.util.List;
 @Component
 public class ScheduleMapper {
 
-    public List<ScheduleDto> scheduleListToScheduleDtoList(List<Schedule> schedules){
+    /**
+     * Converts list of Schedules to list of Schedules DTO's.
+     *
+     * @param schedules list of schedules.
+     * @return list of schedule DTO's
+     */
+    public List<ScheduleDto> scheduleListToScheduleDtoList(List<Schedule> schedules) {
         List<ScheduleDto> scheduleDtos = new ArrayList<>();
-        for (Schedule sch:
+        for (Schedule sch :
                 schedules) {
             scheduleDtos.add(new ScheduleDto(
                     sch.getScheduleId(),

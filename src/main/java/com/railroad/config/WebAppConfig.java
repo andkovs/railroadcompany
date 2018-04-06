@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"com.railroad.config", "com.railroad.rest"})
+@ComponentScan({"com.railroad.config", "com.railroad.controller"})
 @Import({ SecurityConfig.class })
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 

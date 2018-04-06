@@ -19,16 +19,16 @@
                     <form:hidden path="stationId"/>
                     <div class="form-group">
                         <form:label path="stationTitle">Title</form:label>
-                        <form:input path="stationTitle" class="form-control" required="true"/>
+                        <form:input path="stationTitle" class="form-control" required="true" maxlength="44"/>
                     </div>
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <form:label path="lat">Lat</form:label>
-                            <form:input path="lat" id="latInput" class="form-control" type="number" required="true"/>
+                            <form:input path="lat" id="latInput" class="form-control" required="true"/>
                         </div>
                         <div class="col-md-6 form-group">
                             <form:label path="lng">Lng</form:label>
-                            <form:input path="lng" id="lngInput" class="form-control" type="number" required="true"/>
+                            <form:input path="lng" id="lngInput" class="form-control"  required="true"/>
                         </div>
                     </div>
                     <label>Linked Station</label>

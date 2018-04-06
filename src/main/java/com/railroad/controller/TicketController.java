@@ -1,4 +1,4 @@
-package com.railroad.rest;
+package com.railroad.controller;
 
 import com.railroad.core.service.StationService;
 import com.railroad.core.service.TicketService;
@@ -44,7 +44,7 @@ public class TicketController {
      * @param principal    security principal.
      * @return model and view.
      */
-    @RequestMapping(value = {"/ticket"})
+    @RequestMapping(value = {"/ticket"}, method = RequestMethod.GET)
     public ModelAndView tickets(@RequestParam(value = "selectDepStation", required = false) Long depStationId,
                                 @RequestParam(value = "selectArrStation", required = false) Long arrStationId,
                                 @RequestParam(value = "fromTime", required = false) String fromTime,
@@ -60,7 +60,7 @@ public class TicketController {
         mav.addObject("title", "Tickets");
         mav.addObject("stations", stationService.getAllStations());
         if (depStationId != null && arrStationId != null && fromTime != null && toTime != null) {
-            mav.addObject("searchResult", trainService.getTrainsByDepStationIdAndArrStationId(depStationId, arrStationId, fromTime, toTime));
+            mav.addObject("searchResult", trainService.getSearchResult(depStationId, arrStationId, fromTime, toTime));
         }
         mav.addObject("userClickTickets", true);
         return mav;

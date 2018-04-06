@@ -6,14 +6,27 @@
 <head>
     <title>FranceRR - ${title}</title>
 
-    <script src="<c:url value="/resources/lib/jquery-3.3.1.min.js" /> "></script>
+
+
     <link href="<c:url value="/resources/lib/bootstrap/dist/css/bootstrap.css" />" rel="stylesheet">
-    <script src="<c:url value="/resources/lib/bootstrap/dist/js/bootstrap.min.js" /> "></script>
+    <%--<link href="<c:url value="/resources/lib/bootstrap.min.css" />" rel="stylesheet">--%>
+    <script src="<c:url value="/resources/lib/jquery-3.3.1.min.js" /> "></script>
     <script src="<c:url value="/resources/lib/moment.js" /> "></script>
     <script src="<c:url value="/resources/lib/bootstrap-datetimepicker.js" /> "></script>
+    <script src="<c:url value="/resources/lib/bootstrap/dist/js/bootstrap.min.js" /> "></script>
+
+    <script src="<c:url value="/resources/lib/angular.min.js" /> "></script>
+    <script src="<c:url value="/resources/lib/angular-ui-router.min.js" /> "></script>
+    <script src="<c:url value="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.js" />"></script>
+    <script src="<c:url value="/resources/js/app.js" /> "></script>
+    <script src="<c:url value="/resources/js/controller/ticketController.js" /> "></script>
+    <script src="<c:url value="/resources/js/service/ticketService.js" /> "></script>
+
+
+
 
 </head>
-<body>
+<body ng-app="myApp">
 
 <%--navigation--%>
 <%@include file="shared/navbar.jsp" %>
@@ -53,6 +66,7 @@
 <c:if test="${userClickTicket == true}">
     <%@include file="ticket.jsp" %>
 </c:if>
+
 
 </body>
 

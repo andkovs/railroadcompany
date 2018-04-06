@@ -1,6 +1,8 @@
 package com.railroad.model.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +11,23 @@ public class TrainDto {
     private Long trainId;
     private String trainNumber;
     private Boolean enabled;
+    private Integer shift;
     private List<WagonDto> wagons = new ArrayList<>();
     private List<ScheduleDto> schedules = new ArrayList<>();
+    @JsonIgnore
     private List<TicketDto> tickets = new ArrayList<>();
 
     public TrainDto(Long trainId, String trainNumber, Boolean enabled) {
         this.trainId = trainId;
         this.trainNumber = trainNumber;
         this.enabled = enabled;
+    }
+
+    public TrainDto(Long trainId, String trainNumber, Boolean enabled, Integer shift) {
+        this.trainId = trainId;
+        this.trainNumber = trainNumber;
+        this.enabled = enabled;
+        this.shift = shift;
     }
 
     public TrainDto() {
@@ -68,6 +79,14 @@ public class TrainDto {
 
     public void setTickets(List<TicketDto> tickets) {
         this.tickets = tickets;
+    }
+
+    public Integer getShift() {
+        return shift;
+    }
+
+    public void setShift(Integer shift) {
+        this.shift = shift;
     }
 
     @Override

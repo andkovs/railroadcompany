@@ -1,5 +1,7 @@
 package com.railroad.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 
 public class StationDto {
@@ -8,6 +10,7 @@ public class StationDto {
     private String stationTitle;
     private Double lat;
     private Double lng;
+    @JsonIgnore
     private ArrayList<Long> arriveStationIds = new ArrayList<>();
 
     public StationDto() {

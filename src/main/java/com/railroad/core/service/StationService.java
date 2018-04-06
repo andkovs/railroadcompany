@@ -35,7 +35,7 @@ public class StationService {
      *
      * @return list of all station DTO's.
      */
-    public List getAllStations() {
+    public List<StationDto> getAllStations() {
         return stationMapper.stationListToStationDtoList(stationDao.getAllStations());
     }
 

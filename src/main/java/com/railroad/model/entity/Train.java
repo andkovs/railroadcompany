@@ -8,6 +8,7 @@ public class Train {
     private Long trainId;
     private String trainNumber;
     private Boolean enabled;
+    private Integer shift;
     private Collection<Wagon> wagonsByTrainId;
     private Collection<Schedule> schedulesByTrainId;
     private Collection<Ticket> ticketsByTrainId;
@@ -19,6 +20,13 @@ public class Train {
         this.trainId = trainId;
         this.trainNumber = trainNumber;
         this.enabled = enabled;
+    }
+
+    public Train(Long trainId, String trainNumber, Boolean enabled, Integer shift) {
+        this.trainId = trainId;
+        this.trainNumber = trainNumber;
+        this.enabled = enabled;
+        this.shift = shift;
     }
 
     @Id
@@ -50,6 +58,16 @@ public class Train {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Basic
+    @Column(name = "shift")
+    public Integer getShift() {
+        return shift;
+    }
+
+    public void setShift(Integer shift) {
+        this.shift = shift;
     }
 
     @Override

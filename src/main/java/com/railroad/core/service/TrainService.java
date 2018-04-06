@@ -1,12 +1,16 @@
 package com.railroad.core.service;
 
+import com.railroad.core.mapper.StationMapper;
 import com.railroad.core.mapper.TrainMapper;
+import com.railroad.core.mq.MessageSender;
 import com.railroad.model.dao.ScheduleDao;
 import com.railroad.model.dao.TrainDao;
 import com.railroad.model.dto.*;
 import com.railroad.model.entity.Direction;
 import com.railroad.model.entity.Schedule;
 import com.railroad.model.entity.Train;
+import com.railroad.model.search.Graph;
+import com.railroad.model.search.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,12 @@ import java.util.*;
 
 @Service
 public class TrainService {
+
+    private final
+    StationService stationService;
+
+    private final
+    StationMapper stationMapper;
 
     private final
     TrainDao trainDao;
@@ -32,13 +42,19 @@ public class TrainService {
     private final
     DirectionService directionService;
 
+    private final
+    MessageSender messageSender;
+
     @Autowired
-    public TrainService(TrainDao trainDao, TrainMapper trainMapper, WagonService wagonService, DirectionService directionService, ScheduleDao scheduleDao) {
+    public TrainService(TrainDao trainDao, TrainMapper trainMapper, WagonService wagonService, DirectionService directionService, ScheduleDao scheduleDao, MessageSender messageSender, StationService stationService, StationMapper stationMapper) {
         this.trainDao = trainDao;
         this.trainMapper = trainMapper;
         this.wagonService = wagonService;
         this.directionService = directionService;
         this.scheduleDao = scheduleDao;
+        this.messageSender = messageSender;
+        this.stationService = stationService;
+        this.stationMapper = stationMapper;
     }
 
     /**
@@ -133,7 +149,126 @@ public class TrainService {
         trainDao.removeTrain(id);
     }
 
-    public SearchResultDto getTrainsByDepStationIdAndArrStationId(Long depStationId, Long arrStationId, String fromTime, String toTime) {
+    public SearchResultDto getSearchResult(Long depStationId, Long arrStationId, String fromTime, String toTime) {
+        SearchResultDto searchResult = new SearchResultDto();
+        searchResult.setDepStationId(depStationId);
+        searchResult.setArrStationId(arrStationId);
+        searchResult.setFromTime(fromTime);
+        searchResult.setToTime(toTime);
+        List<StationDto> path = getNodes(depStationId, arrStationId);
+        List<StationDto> branch = new ArrayList<>();
+        int count = 0;
+        while (path.size() != 0) {
+            String from = "00:00";
+            String to = "23:59";
+            if (count == 0) {
+                from = fromTime;
+                to = toTime;
+            }
+            List<TrainDto> trains =
+                    getTrainsByDepStationIdAndArrStationId(
+                            path.get(0).getStationId(),
+                            path.get(path.size() - 1).getStationId(),
+                            from,
+                            to);
+            if (trains.size() != 0) {
+                PathTrainsDto pathTrains = new PathTrainsDto();
+                pathTrains.setTrains(trains);
+                for (StationDto s :
+                        path) {
+                    pathTrains.getStations().add(s);
+                }
+                searchResult.getPathTrains().add(pathTrains);
+                if (branch.size() != 0) {
+                    branch.add(path.get(path.size() - 1));
+                }
+                path.clear();
+                path.addAll(branch);
+                Collections.reverse(path);
+                branch.clear();
+                count++;
+            } else {
+                branch.add(path.get(path.size() - 1));
+                path.remove(path.size() - 1);
+            }
+        }
+        return searchResult;
+
+    }
+
+    private List getNodes(Long depStationId, Long arrStationId) {
+        ArrayList<Node> nodes = new ArrayList<>();
+        List<StationDto> stations = stationService.getAllStations();
+        for (StationDto s :
+                stations) {
+            Node node = new Node();
+            node.setStation(s);
+            node.setSearched(false);
+            List<Direction> directions = directionService.getDirectionListByDepStationId(s.getStationId());
+            for (Direction d :
+                    directions) {
+                node.getEdges().add(stationMapper.stationToStationDto(d.getStationByArrStationId()));
+            }
+            nodes.add(node);
+        }
+        Graph graph = new Graph();
+        graph.setNodes(nodes);
+
+        Node startNode = graph.getNodes()
+                .stream().filter(x -> Objects.equals(x.getStation().getStationId(), depStationId)).findFirst().get();
+        Node goalNode = graph.getNodes()
+                .stream().filter(x -> Objects.equals(x.getStation().getStationId(), arrStationId)).findFirst().get();
+
+        return search(startNode, goalNode, graph);
+    }
+
+    private List search(Node startNode, Node goalNode, Graph graph) {
+        // list of visited nodes
+        LinkedList closedList = new LinkedList();
+
+        // list of nodes to visit (sorted)
+        LinkedList openList = new LinkedList();
+        openList.add(startNode);
+
+        while (!openList.isEmpty()) {
+            Node node = (Node) openList.removeFirst();
+            if (node.getStation().getStationId().equals(goalNode.getStation().getStationId())) {
+                // path found!
+                return constructPath(goalNode);
+            } else {
+                closedList.add(node);
+
+                // add neighbors to the open list
+                Iterator i = node.getEdges().iterator();
+                while (i.hasNext()) {
+                    StationDto neighborStation = (StationDto) i.next();
+                    Node neighborNode = graph.getNodes()
+                            .stream().filter(x -> Objects.equals(x.getStation().getStationId(), neighborStation.getStationId())).findFirst().get();
+                    ;
+                    if (!closedList.contains(neighborNode) &&
+                            !openList.contains(neighborNode)) {
+                        neighborNode.setParent(node);
+                        openList.add(neighborNode);
+                    }
+                }
+            }
+        }
+        // no path found
+        return null;
+    }
+
+    private List constructPath(Node node) {
+        LinkedList path = new LinkedList();
+        path.addFirst(node.getStation());
+        do {
+            node = node.getParent();
+            path.addFirst(node.getStation());
+        } while (node.getParent() != null);
+        return path;
+    }
+
+
+    public List<TrainDto> getTrainsByDepStationIdAndArrStationId(Long depStationId, Long arrStationId, String fromTime, String toTime) {
         List<TrainDto> trainDtos = new ArrayList<>();
         List<Direction> departureDirection = directionService.getDirectionListByDepStationId(depStationId);
         List<Direction> arriveDirection = directionService.getDirectionListByArrStationId(arrStationId);
@@ -178,10 +313,32 @@ public class TrainService {
             }
         }
         trainDtos.removeAll(removeTrainsDtos);
-        return new SearchResultDto(depStationId, arrStationId, fromTime, toTime, trainDtos);
+        return trainDtos;
     }
 
-    public boolean isTimeBetweenTwoTime(String initialTime, String finalTime, String currentTime) {
+    public void enableOrDisableTrainById(Long id) {
+        Train train = trainDao.getTrainById(id);
+        if (train.getEnabled()) {
+            trainDao.enableOrDisableTrainById(id, false);
+            TrainJMSDto trainJMSDto = trainMapper.trainToTrainJMSDto(trainDao.getTrainById(id));
+            messageSender.sendMessage(trainJMSDto);
+        } else {
+            trainDao.enableOrDisableTrainById(id, true);
+            TrainJMSDto trainJMSDto = trainMapper.trainToTrainJMSDto(trainDao.getTrainById(id));
+            messageSender.sendMessage(trainJMSDto);
+        }
+    }
+
+    public void setShiftByTrainId(Long id, Integer shift) {
+        Train train = trainDao.getTrainById(id);
+        if (train != null) {
+            trainDao.setShiftByTrainId(id, shift);
+            TrainJMSDto trainJMSDto = trainMapper.trainToTrainJMSDto(trainDao.getTrainById(id));
+            messageSender.sendMessage(trainJMSDto);
+        }
+    }
+
+    private boolean isTimeBetweenTwoTime(String initialTime, String finalTime, String currentTime) {
         String reg = "^([0-1][0-9]|2[0-3]):([0-5][0-9])$";
         if (initialTime.matches(reg) && finalTime.matches(reg) && currentTime.matches(reg)) {
             try {
@@ -215,5 +372,6 @@ public class TrainService {
     private TrainDto getNewTrainDto() {
         return new TrainDto(0L, "", true);
     }
+
 
 }

@@ -48,7 +48,7 @@ public class ScheduleService {
         scheduleDao.removeScheduleById(id);
     }
 
-    public List<ScheduleDto> getScheduleListByStationId(Long id) {
+    public List<ScheduleDto> getScheduleListByDepStationId(Long id) {
         List<Direction> directions = directionService.getDirectionListByDepStationId(id);
         List<ScheduleDto> scheduleDtos = new ArrayList<>();
         for (Direction d :
@@ -57,5 +57,20 @@ public class ScheduleService {
             scheduleDtos.addAll(scheduleListByDirectionId);
         }
         return scheduleDtos;
+    }
+
+    public List<ScheduleDto> getScheduleListByArrStationId(Long id) {
+        List<Direction> directions = directionService.getDirectionListByArrStationId(id);
+        List<ScheduleDto> scheduleDtos = new ArrayList<>();
+        for (Direction d :
+                directions) {
+            List<ScheduleDto> scheduleListByDirectionId = scheduleMapper.scheduleListToScheduleDtoList(scheduleDao.getScheduleListByDirectionId(d.getDirectionId()));
+            scheduleDtos.addAll(scheduleListByDirectionId);
+        }
+        return scheduleDtos;
+    }
+
+    public Schedule getScheduleByTrainIdAndDirectionId(Long trainId, Long directionId) {
+        return scheduleDao.getScheduleByTrainIdAndDirectionId(trainId, directionId);
     }
 }

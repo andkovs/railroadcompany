@@ -35,7 +35,7 @@ public class DirectionService {
      * @param id departure station's id.
      * @return list of direction.s
      */
-    List<Direction> getDirectionListByDepStationId(Long id) {
+    public List<Direction> getDirectionListByDepStationId(Long id) {
         return directionDao.getDirectionListByDepStationId(id);
     }
 
@@ -44,7 +44,7 @@ public class DirectionService {
      *
      * @param stationDto station DTO containing list of directions.
      */
-    void saveDirections(StationDto stationDto) {
+    public void saveDirections(StationDto stationDto) {
         createBidirectional(directionMapper.stationDtoToDirectionList(stationDto)).forEach(directionDao::saveDirection);
     }
 

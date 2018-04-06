@@ -2,6 +2,7 @@ package com.railroad.core.mapper;
 
 import com.railroad.model.dto.ScheduleDto;
 import com.railroad.model.dto.TrainDto;
+import com.railroad.model.dto.TrainJMSDto;
 import com.railroad.model.dto.WagonDto;
 import com.railroad.model.entity.Schedule;
 import com.railroad.model.entity.Ticket;
@@ -32,7 +33,7 @@ public class TrainMapper {
      * @return list of train DTO's.
      */
     public List<TrainDto> trainListToTrainDtoList(List<Train> trains) {
-        if(trains==null){
+        if (trains == null) {
             return new ArrayList();
         }
         return trains.stream().map(this::trainToTrainDto).collect(Collectors.toCollection(ArrayList::new));
@@ -45,13 +46,14 @@ public class TrainMapper {
      * @return train DTO.
      */
     public TrainDto trainToTrainDto(Train train) {
-        if(train==null){
+        if (train == null) {
             return null;
         }
         TrainDto trainDto = new TrainDto(
                 train.getTrainId(),
                 train.getTrainNumber(),
-                train.getEnabled());
+                train.getEnabled(),
+                train.getShift());
         ArrayList<Wagon> wagons = new ArrayList(train.getWagonsByTrainId());
         for (Wagon wagon : wagons) {
             trainDto.getWagons().add(new WagonDto(
@@ -87,13 +89,28 @@ public class TrainMapper {
      * @return train.
      */
     public Train trainDtoToTrain(TrainDto trainDto) {
-        if(trainDto==null){
+        if (trainDto == null) {
             return null;
         }
         return new Train(
                 trainDto.getTrainId(),
                 trainDto.getTrainNumber(),
-                trainDto.getEnabled()
+                trainDto.getEnabled(),
+                trainDto.getShift()
+        );
+    }
+
+    /**
+     * Converts train to train trainJMS DTO.
+     *
+     * @param train convertible train.
+     * @return trainJMS DTO.
+     */
+    public TrainJMSDto trainToTrainJMSDto(Train train) {
+        return new TrainJMSDto(
+                train.getTrainId(),
+                train.getShift(),
+                train.getEnabled()
         );
     }
 }

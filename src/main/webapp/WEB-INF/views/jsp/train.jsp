@@ -36,7 +36,7 @@
                                 </c:if>
                             </div>
                             <div class="form-group">
-                                <form:input path="trainNumber" class="form-control" required="true"/>
+                                <form:input path="trainNumber" class="form-control" required="true" maxlength="44"/>
                             </div>
                             <div class="checkbox">
                                 <label>
@@ -64,6 +64,7 @@
                         <c:if test="${train.trainId!=0}">
                             <form method="POST" action="/wagon/add">
                                 <input type="hidden" name="trainId" value="${train.trainId}"/>
+                                <input type="hidden" name="shift" value="${train.shift}"/>
                                 <div class="row">
                                     <div class="col-md-7">
                                         <select name="wagonTypeId" class="form-control">
@@ -73,7 +74,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <input name="wagonTitle" class="form-control" required="true"/>
+                                        <input name="wagonTitle" class="form-control" required="true" maxlength="44"/>
                                     </div>
                                     <div class="col-md-2">
                                         <button type="submit" class="btn btn-success glyphicon glyphicon-plus"></button>

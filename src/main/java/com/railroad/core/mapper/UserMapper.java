@@ -2,7 +2,7 @@ package com.railroad.core.mapper;
 
 import com.railroad.model.dto.UserDto;
 import com.railroad.model.entity.User;
-import com.railroad.rest.MasterController;
+import com.railroad.controller.MasterController;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -52,10 +52,10 @@ public class UserMapper {
         Timestamp birthDate;
         try {
             birthDate = new Timestamp(new SimpleDateFormat("dd-MM-yyyy").parse(userDto.getBirthDate()).getTime());
-            birthDate.setTime(birthDate.getTime()+(1800*60*100));
+            birthDate.setTime(birthDate.getTime() + (1800 * 60 * 100));
         } catch (ParseException e) {
             birthDate = new Timestamp(new Date().getTime());
-            birthDate.setTime(birthDate.getTime()+(1800*60*100));
+            birthDate.setTime(birthDate.getTime() + (1800 * 60 * 100));
             logger.error("invalid date format in userDtoToUser()!", e);
         }
 

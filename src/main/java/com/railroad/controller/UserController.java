@@ -1,4 +1,4 @@
-package com.railroad.rest;
+package com.railroad.controller;
 
 import com.railroad.core.service.UserService;
 import com.railroad.model.dto.UserDto;

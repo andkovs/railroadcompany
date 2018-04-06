@@ -89,4 +89,32 @@ public class TrainDao {
         query.setParameter("trainNumber", trainNumber);
         return (Train) query.uniqueResult();
     }
+
+    /**
+     * Sets true/false value in enable column.
+     *
+     * @param id    train id.
+     * @param value set's value.
+     */
+    public void enableOrDisableTrainById(Long id, boolean value) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("update Train set enabled=:enabled where trainId=:trainId");
+        query.setParameter("enabled", value);
+        query.setParameter("trainId", id);
+        query.executeUpdate();
+    }
+
+    /**
+     * Sets value in shift's column.
+     *
+     * @param id    train id.
+     * @param shift set's value.
+     */
+    public void setShiftByTrainId(Long id, Integer shift) {
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("update Train set shift=:shift where trainId=:trainId");
+        query.setParameter("shift", shift);
+        query.setParameter("trainId", id);
+        query.executeUpdate();
+    }
 }
